@@ -10,45 +10,68 @@ const state = {
 };
 
 const viewer = new Cesium.Viewer("globe", {
-  animation: false, timeline: false, baseLayerPicker: false, geocoder: false,
-  homeButton: false, sceneModePicker: false, navigationHelpButton: false,
-  infoBox: false, selectionIndicator: false, fullscreenButton: false,
+  animation: false,
+  timeline: false,
+  baseLayerPicker: false,
+  geocoder: false,
+  homeButton: false,
+  sceneModePicker: false,
+  navigationHelpButton: false,
+  infoBox: false,
+  selectionIndicator: false,
+  fullscreenButton: false,
   shouldAnimate: true,
   terrainProvider: new Cesium.EllipsoidTerrainProvider(),
-  imageryProvider: new Cesium.UrlTemplateImageryProvider({
-    // Esri World Imagery satellite tiles. No client API token is required for this public endpoint.
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    credit: "Imagery © Esri and its data providers",
-    maximumLevel: 19
-  })
+  imageryProvider: false
 });
 
 viewer.scene.globe.show = true;
+viewer.scene.globe.baseColor = Cesium.Color.fromCssColorString("#162536");
 viewer.scene.globe.enableLighting = true;
 viewer.scene.globe.showGroundAtmosphere = true;
 viewer.scene.skyAtmosphere.show = true;
 viewer.scene.fog.enabled = true;
-viewer.scene.globe.depthTestAgainstTerrain = true;
 viewer.scene.backgroundColor = Cesium.Color.fromCssColorString("#020711");
+
 viewer.scene.screenSpaceCameraController.minimumZoomDistance = 20;
 viewer.scene.screenSpaceCameraController.maximumZoomDistance = 40000000;
 
-// Public global quantized-mesh terrain: real mountains and valleys without a Cesium ion token.
-// If the external terrain service is unavailable, the satellite globe still remains usable.
+// Спутниковые снимки Esri
+const satelliteLayer = new Cesium.UrlTemplateImageryProvider({
+  url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  credit: "Imagery © Esri and its data providers",
+  minimumLevel: 0,
+  maximumLevel: 19
+});
+
+viewer.imageryLayers.addImageryProvider(satelliteLayer);
+
+// Подключаем глобальный 3D-рельеф
 (async () => {
+  const badge = document.querySelector(".bottom-left");
+
   try {
     const terrain = await Cesium.CesiumTerrainProvider.fromUrl(
       "https://terrain.reearth.land/cesium-mesh/ellipsoid",
-      { requestVertexNormals: true, requestWaterMask: true }
+      {
+        requestVertexNormals: true,
+        requestWaterMask: true
+      }
     );
+
     viewer.terrainProvider = terrain;
-    viewer.scene.globe.depthTestAgainstTerrain = true;
-    const badge = document.querySelector(".bottom-left");
-    if (badge) badge.innerHTML = '<span class="live-dot"></span> SIMULATION RUNNING <span class="separator">|</span> TERRAIN: GLOBAL 3D';
+
+    if (badge) {
+      badge.innerHTML =
+        '<span class="live-dot"></span> SIMULATION RUNNING <span class="separator">|</span> TERRAIN: GLOBAL 3D';
+    }
   } catch (error) {
-    console.warn("3D terrain unavailable; using smooth globe", error);
-    const badge = document.querySelector(".bottom-left");
-    if (badge) badge.innerHTML = '<span class="live-dot"></span> SIMULATION RUNNING <span class="separator">|</span> TERRAIN: SATELLITE GLOBE';
+    console.error("Terrain loading failed:", error);
+
+    if (badge) {
+      badge.innerHTML =
+        '<span class="live-dot"></span> SIMULATION RUNNING <span class="separator">|</span> TERRAIN: SATELLITE GLOBE';
+    }
   }
 })();
 
