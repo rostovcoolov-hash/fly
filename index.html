@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>World Flight Simulator</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Widgets/widgets.css">
+</head>
+<body>
+  <div id="globe"></div>
+  <div class="topbar">
+    <div class="brand"><span class="brand-mark">✈</span><div><b>WORLD FLIGHT</b><small>GLOBAL FLIGHT SIMULATOR</small></div></div>
+    <div class="status"><span class="dot"></span><span id="status">SYSTEMS ONLINE</span></div>
+  </div>
+  <section class="hud">
+    <div class="metric"><small>INDICATED SPEED</small><strong><span id="speed">120</span><i>KT</i></strong></div>
+    <div class="metric"><small>ALTITUDE</small><strong><span id="altitude">3,000</span><i>FT</i></strong></div>
+    <div class="metric"><small>HEADING</small><strong><span id="heading">090</span><i>°</i></strong></div>
+    <div class="metric"><small>VERTICAL SPEED</small><strong><span id="vertical">0</span><i>FPM</i></strong></div>
+  </section>
+  <aside class="panel">
+    <div class="panel-head"><div><small>FLIGHT MANAGEMENT</small><h2>Navigation</h2></div><span class="badge">LIVE</span></div>
+    <form id="search-form"><input id="place" placeholder="Search city, airport or coordinates" autocomplete="off"><button type="submit" aria-label="Search">⌕</button></form>
+    <div class="quick"><button data-lat="51.47" data-lon="-0.4543" data-name="London Heathrow">LHR</button><button data-lat="40.6413" data-lon="-73.7781" data-name="New York JFK">JFK</button><button data-lat="25.2532" data-lon="55.3657" data-name="Dubai">DXB</button><button data-lat="35.5494" data-lon="139.7798" data-name="Tokyo Haneda">HND</button></div>
+    <div class="location"><small>FLIGHT POSITION</small><b id="position">51.4700° N, 0.4543° W</b><span id="destination-label">Destination not set</span></div>
+    <div class="camera-row"><button id="chase" class="active">↗ Chase camera</button><button id="cockpit">▣ Cockpit</button></div>
+    <div class="controls-note"><small>CONTROLS</small><p><kbd>W</kbd>/<kbd>S</kbd> Pitch <kbd>A</kbd>/<kbd>D</kbd> Bank</p><p><kbd>Q</kbd>/<kbd>E</kbd> Rudder · <kbd>Shift</kbd>/<kbd>Ctrl</kbd> Throttle</p><p>Mobile: use the flight pad below</p></div>
+    <div class="panel-footer"><span>MODEL SOURCE</span><span id="model-state">Loading aircraft…</span></div>
+  </aside>
+  <div class="flight-pad">
+    <div class="pad-column"><button data-control="pitchUp">▲</button><button data-control="pitchDown">▼</button><small>PITCH</small></div>
+    <div class="pad-column"><button data-control="bankLeft">◀</button><button data-control="bankRight">▶</button><small>BANK</small></div>
+    <div class="pad-column throttle"><button data-control="throttleUp">＋</button><button data-control="throttleDown">－</button><small>THROTTLE</small></div>
+  </div>
+  <div class="bottom-left"><span class="live-dot"></span> SIMULATION RUNNING <span class="separator">|</span> TERRAIN: GLOBAL ELLIPSOID</div>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.127/Build/Cesium/Cesium.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
